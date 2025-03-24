@@ -1,0 +1,124 @@
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+            <!DOCTYPE html>
+            <html lang="en">
+
+            <head>
+                <meta charset="utf-8" />
+                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+                <meta name="description" content=" Dự án Sweetie Pies" />
+                <meta name="author" content=" IT" />
+                <title>Manager Orders </title>
+                <link href="/css/styles.css" rel="stylesheet" />
+                <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+            </head>
+
+            <body class="sb-nav-fixed">
+                <jsp:include page="../layout/header.jsp" />
+                <div id="layoutSidenav">
+                    <jsp:include page="../layout/sidebar.jsp" />
+                    <div id="layoutSidenav_content">
+                        <main>
+                            <div class="container-fluid px-4">
+                                <h1 class="mt-4">Quản lí Đơn hàng</h1>
+                                <ol class="breadcrumb mb-4">
+                                    <li class="breadcrumb-item"><a href="/admin">Trang chủ</a></li>
+                                    <li class="breadcrumb-item active">Đơn hàng</li>
+                                </ol>
+                                <div class="mt-5">
+                                    <div class="row">
+                                        <div class="col-12 mx-auto">
+                                            <div class="d-flex">
+                                                <h3>Danh sách đơn hàng</h3>
+                                            </div>
+
+                                            <hr />
+                                            <table class=" table table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Tổng tiền</th>
+                                                        <th>Trạng thái</th>
+                                                        <th>Tên Người nhận</th>
+                                                        <th>Địa chỉ nhận</th>
+                                                        <th>SĐT Người nhận</th>
+                                                        <th>Ghi chú</th>
+                                                        <th>Hành động</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach var="guestOrder" items="${guestOrders}">
+                                                        <tr>
+                                                            <th>${guestOrder.id}</th>
+                                                            <td>
+                                                                <fmt:formatNumber type="number"
+                                                                    value="${guestOrder.totalPrice}" /> đ
+                                                            </td>
+                                                            <td>${guestOrder.status.name}</td>
+                                                            <td>${guestOrder.receiverName}</td>
+                                                            <td>${guestOrder.receiverAddress}</td>
+                                                            <td>${guestOrder.receiverPhone}</td>
+                                                            <td>${guestOrder.receiverNote}</td>
+                                                            <td>
+                                                                <a href="/admin/guest-order/${guestOrder.id}"
+                                                                    class="btn btn-success">Chi tiết</a>
+                                                                <a href="/admin/guest-order/update/${guestOrder.id}"
+                                                                    class="btn btn-warning  mx-2">Cập nhập</a>
+                                                                <a href="/admin/guest-order/delete/${guestOrder.id}"
+                                                                    class="btn btn-danger">Xóa</a>
+                                                            </td>
+                                                        </tr>
+
+                                                    </c:forEach>
+
+                                                </tbody>
+                                            </table>
+                                            <c:if test="${totalPages > 0}">
+                                                <nav aria-label="Page navigation example">
+                                                    <ul class="pagination justify-content-center">
+                                                        <li class="page-item">
+                                                            <a class="${1 eq currentPage ? 'disabled page-link' : 'page-link'}"
+                                                                href="/admin/guest-order=${currentPage - 1}"
+                                                                aria-label="Previous">
+                                                                <span aria-hidden="true">&laquo;</span>
+                                                            </a>
+                                                        </li>
+                                                        <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
+                                                            <li class="page-item">
+                                                                <a class="${(loop.index + 1) eq currentPage ? 'active page-link' : 'page-link'}"
+                                                                    href="/admin/guest-order=${loop.index + 1}">
+                                                                    ${loop.index + 1}
+                                                                </a>
+                                                            </li>
+                                                        </c:forEach>
+                                                        <li class="page-item">
+                                                            <a class="${totalPages eq currentPage ? 'disabled page-link' : 'page-link'}"
+                                                                href="/admin/guest-order=${currentPage + 1}"
+                                                                aria-label="Next">
+                                                                <span aria-hidden="true">&raquo;</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </c:if>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </main>
+                        <jsp:include page="../layout/footer.jsp" />
+                    </div>
+                </div>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+                    crossorigin="anonymous"></script>
+                <script src="/js/scripts.js"></script>
+
+            </body>
+
+            </html>
