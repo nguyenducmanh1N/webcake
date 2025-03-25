@@ -82,7 +82,7 @@ public class SecurityConfiguration {
 
                                                                 "/forgot-password",
                                                                 "/reset-password",
-                                                                "/oauth2/**", "/howtobuy")
+                                                                "/oauth2/**", "/howtobuy", "/search")
                                                 .permitAll()
 
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
