@@ -86,6 +86,11 @@ public class UserController {
         return "admin/user/create";
     }
 
+    public boolean validatePassword(String password) {
+        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,16}$";
+        return password.matches(passwordPattern);
+    }
+
     @PostMapping(value = "/admin/user/create")
     public String createUserPage(Model model,
             @ModelAttribute("newUser") @Valid User user,
@@ -100,6 +105,11 @@ public class UserController {
 
         if (userService.checkEmailExist(user.getEmail())) {
             newUserBindingResult.rejectValue("email", "error.user", "Email đã tồn tại!");
+        }
+        if (!validatePassword(user.getPassword())) {
+            newUserBindingResult.rejectValue("password", "error.user",
+                    "Mật khẩu phải dài 8-16 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt!");
+            return "admin/user/create";
         }
 
         // validate
@@ -156,6 +166,12 @@ public class UserController {
             @Valid @ModelAttribute("newUser") User user,
             BindingResult bindingResult,
             @RequestParam("flowershopFile") MultipartFile file) {
+
+        if (!validatePassword(user.getPassword())) {
+            bindingResult.rejectValue("password", "error.user",
+                    "Mật khẩu phải dài 8-16 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt!");
+            return "admin/user/update";
+        }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("newUser", user);

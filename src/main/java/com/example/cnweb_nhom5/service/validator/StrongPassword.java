@@ -14,7 +14,7 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface StrongPassword {
-    String message() default "Phải dài 8 ký tự và kết hợp chữ hoa, chữ thường, số, ký tự đặc biệt.";
+    String message() default "Phải dài 8 - 16 ký tự và kết hợp chữ hoa, chữ thường, số, ký tự đặc biệt.";
 
     Class<?>[] groups() default {};
 
