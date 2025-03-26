@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
         <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
             <!DOCTYPE html>
             <html lang="en">
@@ -18,21 +19,25 @@
 
                 <script>
                     $(document).ready(() => {
-                            const avatarFile = $("#avatarFile"); // Thay đổi từ $("#files") thành $("#avatarFile")
-                            const orgImage = "${newProduct.images}";
+                        $('#files').on('change', function (e) {
+                            const files = e.target.files;
+                            const filePreviewContainer = $('#filePreviewContainer');
+                            filePreviewContainer.empty(); // Xóa các ảnh cũ
 
-                            if (orgImage) {
-                                const urlImage = "/images/product/" + orgImage;
-                                $("#avatarPreview").attr("src", urlImage);
-                                $("#avatarPreview").css({ "display": "block" });
+                            if (files) {
+                                $.each(files, function (index, file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function (event) {
+                                        const img = $('<img>').attr('src', event.target.result)
+                                            .css('max-height', '250px')
+                                            .css('margin-right', '10px');
+                                        filePreviewContainer.append(img);
+                                    };
+                                    reader.readAsDataURL(file);
+                                });
                             }
-
-                            avatarFile.change(function (e) {
-                                const imgURL = URL.createObjectURL(e.target.files[0]);
-                                $("#avatarPreview").attr("src", imgURL);
-                                $("#avatarPreview").css({ "display": "block" });
-                            });
                         });
+                    });
                 </script>
             </head>
 
@@ -117,7 +122,7 @@
                                                 </div>
 
                                                
-                                                <div class="mb-3 col-12 col-md-6">
+                                                <!-- <div class="mb-3 col-12 col-md-6">
                                                     <c:set var="errorFactory">
                                                         <form:errors path="factory" cssClass="invalid-feedback" />
                                                     </c:set>
@@ -146,15 +151,7 @@
                                                 
                                                     ${errorTarget}
                                                 </div>
-                                                <!-- <c:if test="${not empty categoryError}">
-                                                                                                    <div class="alert alert-danger">${categoryError}</div>
-                                                                                                </c:if>
-                                                                                                <c:if test="${not empty factoryError}">
-                                                                                                    <div class="alert alert-danger">${factoryError}</div>
-                                                                                                </c:if>
-                                                                                                <c:if test="${not empty targetError}">
-                                                                                                    <div class="alert alert-danger">${targetError}</div>
-                                                                                                </c:if> -->
+                                                
                                                 
                                                 
                                                 <div class="mb-3 col-12 col-md-6">
@@ -170,36 +167,53 @@
                                                     </select>
                                                 
                                                     ${errorCategory}
+                                                </div> -->
+                                                <div class="mb-3 col-12 col-md-6">
+                                                    <label class="form-label">Nơi cung cấp:</label>
+                                                    <select id="factory" name="factoryId" class="form-select ${not empty errorFactory ? 'is-invalid' : ''}" required>
+                                                        <option value="">Chọn nơi cung cấp</option>
+                                                        <c:forEach var="factory" items="${factories}">
+                                                            <option value="${factory.id}">${factory.name}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    ${errorFactory}
                                                 </div>
+                                                
+                                                <div class="mb-3 col-12 col-md-6">
+                                                    <label class="form-label">Mục đích:</label>
+                                                    <select id="target" name="targetId" class="form-select ${not empty errorTarget ? 'is-invalid' : ''}" required>
+                                                        <option value="">Chọn mục đích</option>
+                                                        <c:forEach var="target" items="${targets}">
+                                                            <option value="${target.id}">${target.name}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    ${errorTarget}
+                                                </div>
+                                                
+                                                <div class="mb-3 col-12 col-md-6">
+                                                    <label class="form-label">Danh mục:</label>
+                                                    <select id="category" name="categoryId" class="form-select ${not empty errorCategory ? 'is-invalid' : ''}" required>
+                                                        <option value="">Chọn danh mục</option>
+                                                        <c:forEach var="category" items="${categories}">
+                                                            <option value="${category.id}">${category.name}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    ${errorCategory}
+                                                </div>
+                                                <!-- <div class="card-img-top">
+                                                    <c:forEach var="image" items="${fn:split(product.images, ';')}">
+                                                        <img src="/images/product/${image}" alt="Product Image" style="width: 20%; margin-bottom: 10px;">
+                                                    </c:forEach>
+                                                </div> -->
                                                 <div class="mb-3 col-12 col-md-6">
                                                     <label for="files" class="form-label">Ảnh:</label>
                                                     <input class="form-control ${not empty errorImage ? 'is-invalid' : ''}" type="file" id="files"
                                                         accept=".png, .jpg, .jpeg" name="files" multiple part="images" />
                                                     ${errorImage}
                                                 </div>
-                                                
-                                                <div class="col-12 mb-3">
-                                                    <img style="max-height: 250px; display: none;" alt="avatar preview"
-                                                        id="avatarPreview" />
+                                                <div class="col-12 mb-3" id="filePreviewContainer">
+                                                    <!-- Image previews will be displayed here -->
                                                 </div>
-                                                <!-- <div class="mb-3 col-12 col-md-6"></div>
-                                                    <label for="category" >Category</label>
-                                                    <select class="col-12 mb-3" id="category" name="categoryId">
-                                                        <option value="">Select Category</option>
-                                                        <c:forEach var="category" items="${categories}">
-                                                            <option value="${category.id}">${category.name}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </div> -->
-                                                <!-- <div class="mb-3 col-12 col-md-6">
-                                                    <label for="category">Danh mục</label>
-                                                    <select id="category" name="categoryId">
-                                                        <option value="">Chọn Danh mục</option>
-                                                        <c:forEach var="category" items="${categories}">
-                                                            <option value="${category.id}">${category.name}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </div> -->
                                                 <div class="col-12 mb-5">
                                                     <button type="submit" class="btn btn-warning" >Cập nhập</button>
                                                 </div>

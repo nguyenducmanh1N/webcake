@@ -137,31 +137,22 @@ public class ProductController {
     public String handleCreateProduct(
             @ModelAttribute("newProduct") @Valid Product pr,
             BindingResult newProductBindingResult,
-            @RequestParam(value = "categoryId", required = false) Long categoryId,
-            @RequestParam(value = "factoryId", required = false) Long factoryId,
-            @RequestParam(value = "targetId", required = false) Long targetId,
+            @RequestParam("categoryId") Long categoryId,
+            @RequestParam("factoryId") Long factoryId,
+            @RequestParam("targetId") Long targetId,
             @RequestParam("files") MultipartFile[] files,
             Model model) {
+        List<Category> categories = categoryService.fetchAllCategories();
+        List<Factory> factories = factoryService.fetchAllFactories();
+        List<Target> targets = targetService.fetchAllTargets();
 
         // Kiểm tra lỗi validation của sản phẩm
         if (newProductBindingResult.hasErrors()) {
+            model.addAttribute("categories", categories);
+            model.addAttribute("factories", factories);
+            model.addAttribute("targets", targets);
             return "admin/product/create";
         }
-
-        // Kiểm tra nếu categoryId, factoryId hoặc targetId chưa được chọn
-        if (categoryId == null || factoryId == null || targetId == null) {
-            if (categoryId == null) {
-                model.addAttribute("categoryError", "Vui lòng chọn danh mục.");
-            }
-            if (factoryId == null) {
-                model.addAttribute("factoryError", "Vui lòng chọn nhà cung cấp.");
-            }
-            if (targetId == null) {
-                model.addAttribute("targetError", "Vui lòng chọn mục tiêu.");
-            }
-            return "admin/product/create";
-        }
-
         // Upload ảnh sản phẩm
         StringBuilder images = new StringBuilder();
         for (MultipartFile file : files) {
@@ -203,84 +194,48 @@ public class ProductController {
         return "admin/product/update";
     }
 
-    // @PostMapping("/admin/product/update")
-    // public String handleUpdateProduct(@ModelAttribute("newProduct") @Valid
-    // Product pr,
-    // BindingResult newProductBindingResult,
-    // @RequestParam("categoryId") Long categoryId, // Nhận categoryId từ form
-    // @RequestParam("flowershopFile") MultipartFile file) {
-
-    // // validate
-    // if (newProductBindingResult.hasErrors()) {
-    // return "admin/product/update";
-    // }
-
-    // Product currentProduct =
-    // this.productService.fetchProductById(pr.getId()).get();
-    // if (currentProduct != null) {
-    // // update new image
-    // if (!file.isEmpty()) {
-    // String img = this.uploadService.handleSaveUploadFile(file, "product");
-    // currentProduct.setImages(img);
-    // }
-
-    // currentProduct.setName(pr.getName());
-    // currentProduct.setPrice(pr.getPrice());
-    // currentProduct.setQuantity(pr.getQuantity());
-    // currentProduct.setDetailDesc(pr.getDetailDesc());
-    // currentProduct.setShortDesc(pr.getShortDesc());
-    // currentProduct.setFactory(pr.getFactory());
-    // currentProduct.setTarget(pr.getTarget());
-    // //currentProduct.setCategory(pr.getCategory());
-    // // Cập nhật category
-    // Category category = this.categoryService.findById(categoryId);
-    // currentProduct.setCategory(category);
-
-    // this.productService.createProduct(currentProduct);
-    // }
-
-    // return "redirect:/admin/product";
-    // }
     @PostMapping("/admin/product/update")
     public String handleUpdateProduct(@ModelAttribute("newProduct") @Valid Product pr,
             BindingResult newProductBindingResult,
-            @RequestParam(value = "categoryId", required = false) Long categoryId,
+            @RequestParam("categoryId") Long categoryId,
 
             @RequestParam("files") MultipartFile[] files,
 
-            @RequestParam(value = "factoryId", required = false) Long factoryId,
-            @RequestParam(value = "targetId", required = false) Long targetId, Model model) {
+            @RequestParam("factoryId") Long factoryId,
+            @RequestParam("targetId") Long targetId, Model model) {
 
+        List<Category> categories = categoryService.fetchAllCategories();
+        List<Factory> factories = factoryService.fetchAllFactories();
+        List<Target> targets = targetService.fetchAllTargets();
         // Validate
         if (newProductBindingResult.hasErrors()) {
+
+            // Thêm danh sách category vào model để truyền sang view
+
+            model.addAttribute("factories", factories);
+            model.addAttribute("targets", targets);
+
+            model.addAttribute("categories", categories);
             return "admin/product/update";
         }
-        if (categoryId == null || factoryId == null || targetId == null) {
-            if (categoryId == null) {
-                model.addAttribute("categoryError", "Vui lòng chọn danh mục.");
-            }
-            if (factoryId == null) {
-                model.addAttribute("factoryError", "Vui lòng chọn nhà cung cấp.");
-            }
-            if (targetId == null) {
-                model.addAttribute("targetError", "Vui lòng chọn mục tiêu.");
-            }
-            return "admin/product/create";
-        }
+        // if (categoryId == null || factoryId == null || targetId == null) {
+        // if (categoryId == null) {
+        // model.addAttribute("categoryError", "Vui lòng chọn danh mục.");
+        // }
+        // if (factoryId == null) {
+        // model.addAttribute("factoryError", "Vui lòng chọn nhà cung cấp.");
+        // }
+        // if (targetId == null) {
+        // model.addAttribute("targetError", "Vui lòng chọn mục tiêu.");
+        // }
+        // return "admin/product/create";
+        // }
 
         Optional<Product> currentProductOpt = this.productService.fetchProductById(pr.getId());
         if (currentProductOpt.isPresent()) {
             Product currentProduct = currentProductOpt.get();
 
-            // Xử lý upload nhiều hình ảnh mới (nếu có)
-            // StringBuilder images = new StringBuilder(currentProduct.getImages());
-            // for (MultipartFile file : files) {
-            // if (!file.isEmpty()) {
-            // String img = this.uploadService.handleSaveUploadFile(file, "product");
-            // images.append(img).append(";");
-            // }
-            // }
-            // currentProduct.setImages(images.toString());
+            ;
             StringBuilder images = new StringBuilder();
             for (MultipartFile file : files) {
                 if (!file.isEmpty()) {

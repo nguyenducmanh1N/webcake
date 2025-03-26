@@ -114,57 +114,35 @@
                                                 </div>
 
                                                 <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorFactory">
-                                                        <form:errors path="factory" cssClass="invalid-feedback" />
-                                                    </c:set>
                                                     <label class="form-label">Nơi cung cấp:</label>
-                                                    <select id="factory" name="factoryId" class="form-select ${not empty errorFactory ? 'is-invalid' : ''}">
+                                                    <select id="factory" name="factoryId" class="form-select ${not empty errorFactory ? 'is-invalid' : ''}" required>
                                                         <option value="">Chọn nơi cung cấp</option>
                                                         <c:forEach var="factory" items="${factories}">
                                                             <option value="${factory.id}">${factory.name}</option>
                                                         </c:forEach>
                                                     </select>
-                                                    
                                                     ${errorFactory}
                                                 </div>
                                                 
                                                 <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorTarget">
-                                                        <form:errors path="target" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <label class="form-label">Mục đích :</label>
-                                                    <select id="target" name="targetId" class="form-select ${not empty errorTarget ? 'is-invalid' : ''}">
+                                                    <label class="form-label">Mục đích:</label>
+                                                    <select id="target" name="targetId" class="form-select ${not empty errorTarget ? 'is-invalid' : ''}" required>
                                                         <option value="">Chọn mục đích</option>
                                                         <c:forEach var="target" items="${targets}">
                                                             <option value="${target.id}">${target.name}</option>
                                                         </c:forEach>
                                                     </select>
-                                                    
                                                     ${errorTarget}
                                                 </div>
-                                                <!-- <c:if test="${not empty categoryError}">
-                                                    <div class="alert alert-danger">${categoryError}</div>
-                                                </c:if>
-                                                <c:if test="${not empty factoryError}">
-                                                    <div class="alert alert-danger">${factoryError}</div>
-                                                </c:if>
-                                                <c:if test="${not empty targetError}">
-                                                    <div class="alert alert-danger">${targetError}</div>
-                                                </c:if> -->
-
                                                 
                                                 <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorCategory">
-                                                        <form:errors path="category" cssClass="invalid-feedback" />
-                                                    </c:set>
-                                                    <label class="form-label">Danh mục :</label>
-                                                    <select id="category" name="categoryId" class="form-select ${not empty errorCategory ? 'is-invalid' : ''}">
+                                                    <label class="form-label">Danh mục:</label>
+                                                    <select id="category" name="categoryId" class="form-select ${not empty errorCategory ? 'is-invalid' : ''}" required>
                                                         <option value="">Chọn danh mục</option>
                                                         <c:forEach var="category" items="${categories}">
                                                             <option value="${category.id}">${category.name}</option>
                                                         </c:forEach>
                                                     </select>
-                                                    
                                                     ${errorCategory}
                                                 </div>
 

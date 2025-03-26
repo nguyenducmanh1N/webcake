@@ -34,7 +34,7 @@ public class Product implements Serializable {
     private long id;
 
     @NotNull
-    @Pattern(regexp = "^[a-zA-ZÀ-ỹ]+$", message = "Tên chỉ được chứa chữ cái")
+    @Pattern(regexp = "^[a-zA-ZÀ-ỹ\\s]+$", message = "Tên chỉ được chứa chữ cái")
     @Size(min = 3, message = "Tên sản phẩm không được trống và phải có tối thiểu 3 ký tự")
     private String name;
 
@@ -42,7 +42,6 @@ public class Product implements Serializable {
     @DecimalMin(value = "0", inclusive = false, message = "Giá phải lớn hơn 0")
     private double price;
 
-    @NotNull(message = "Ảnh sản phẩm không được để trống")
     private String images;
 
     @NotNull
@@ -61,17 +60,14 @@ public class Product implements Serializable {
 
     private long sold;
 
-    @NotNull(message = "Vui lòng chọn nơi cung cấp")
     @ManyToOne
     @JoinColumn(name = "factory_id")
     private Factory factory;
 
-    @NotNull(message = "Vui lòng chọn mục đích")
     @ManyToOne
     @JoinColumn(name = "target_id")
     private Target target;
 
-    @NotNull(message = "Vui lòng chọn danh mục")
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

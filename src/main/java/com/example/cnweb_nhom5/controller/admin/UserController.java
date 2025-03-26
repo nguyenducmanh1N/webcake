@@ -170,6 +170,7 @@ public class UserController {
         if (!validatePassword(user.getPassword())) {
             bindingResult.rejectValue("password", "error.user",
                     "Mật khẩu phải dài 8-16 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt!");
+            model.addAttribute("newUser", user);
             return "admin/user/update";
         }
 
@@ -178,13 +179,12 @@ public class UserController {
             return "admin/user/update"; // Đảm bảo đường dẫn đúng
         }
 
-        User currentUser = this.userService.getUserById(user.getId());
-        if (currentUser != null) {
+        User currentUser = this.userService.getUserByEmail(user.getEmail());
+        if (currentUser != null) {// loi cho nay
             if (!file.isEmpty()) {
                 String img = this.uploadService.handleSaveUploadFile(file, "avatar");
                 currentUser.setAvatar(img);
             }
-
             currentUser.setAddress(user.getAddress());
             currentUser.setFullName(user.getFullName());
             currentUser.setPhone(user.getPhone());
